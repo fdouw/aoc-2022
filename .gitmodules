@@ -1,3 +1,3 @@
 [submodule "src/lib_aoc"]
 	path = src/lib_aoc
-	url = git@github.com:fdouw/lib-aoc.git
+	url = git@github.com:fdouw/lib_aoc.git
