@@ -1,0 +1,14 @@
+
+To start a new project:
+```bash
+cp -r template y1999
+cd y1999
+
+cargo init
+
+git init
+git add .
+git commit -m "Initial commit"
+git submodule add git@github.com:fdouw/lib_aoc.git ./src/lib_aoc/
+git commit -m "Add submodule for libaoc"
+```
