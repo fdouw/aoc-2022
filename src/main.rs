@@ -1,7 +1,6 @@
 use crate::solutions::*;
 use std::{env, fs, io};
 
-mod lib_2017;
 #[allow(dead_code)]
 mod lib_aoc;
 mod solutions;
