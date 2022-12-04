@@ -1,42 +1,34 @@
+use itertools::Itertools;
+
 pub fn solve(input: String, _verbose: bool) -> (String, String) {
-    let part1: u32 = input
+    let part1: u16 = input
         .lines()
-        .map(|l| {
-            let (a, b) = l.split_at(l.len() / 2);
-            let b: Vec<char> = b.chars().collect();
-            let mut val = 0;
-            for c in a.chars() {
-                if b.contains(&c) {
-                    let d: u32 = c.into();
-                    val = match d {
-                        97..=122 => d - 96, // a-z => 1-26
-                        65..=90 => d - 38,  // A-Z => 27-52
-                        _ => panic!("Invalid character"),
-                    };
-                    break;
-                }
-            }
-            val
+        .map(|l| l.split_at(l.len() / 2))
+        .filter_map(|(a, b)| {
+            let b: Vec<char> = b.chars().collect(); // Vector seems faster than HashSet for these small sets
+            a.chars().find(|c| b.contains(c)).map(priority)
         })
         .sum();
 
-    // Part 2
-    let mut part2 = 0;
-    let rucksacks: Vec<&str> = input.lines().collect();
-    for i in (0..rucksacks.len()).step_by(3) {
-        let c: u32 = rucksacks[i]
-            .chars()
-            .filter(|item| rucksacks[i + 1].contains(*item))
-            .filter(|item| rucksacks[i + 2].contains(*item))
-            .next()
-            .unwrap()
-            .into();
-        part2 += match c {
-            97..=122 => c - 96, // a-z => 1-26
-            65..=90 => c - 38,  // A-Z => 27-52
-            _ => panic!("Invalid character"),
-        }
-    }
+    let part2: u16 = input
+        .lines()
+        .tuples()
+        .map(|(a, b, c)| {
+            a.chars()
+                .filter(|item| b.contains(*item))
+                .find(|item| c.contains(*item))
+                .expect("each triplet should have exactly 1 character in common")
+        })
+        .map(priority)
+        .sum();
 
     (part1.to_string(), part2.to_string())
+}
+
+fn priority(item_type: char) -> u16 {
+    match item_type {
+        'a'..='z' => item_type as u16 - 96,
+        'A'..='Z' => item_type as u16 - 38,
+        _ => panic!("Invalid character: {item_type}"),
+    }
 }
