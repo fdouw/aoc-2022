@@ -15,7 +15,7 @@ pub fn solve(input: String, _verbose: bool) -> (String, String) {
         .map(|l| {
             l.chars()
                 .map(|c| Tree {
-                    height: c.into(),
+                    height: (c.to_digit(10).unwrap() + 1),
                     visible: false,
                     scenic_score: 1,
                 })
@@ -29,6 +29,10 @@ pub fn solve(input: String, _verbose: bool) -> (String, String) {
         let mut max_height_r = 0;
         let len = row.len();
         for i in 0..len {
+            if row[i].visible && row[len - i - 1].visible {
+                // short circuit if row is entirely visible
+                break;
+            }
             if row[i].height > max_height_l {
                 max_height_l = row[i].height;
                 row[i].visible = true;
@@ -65,11 +69,15 @@ pub fn solve(input: String, _verbose: bool) -> (String, String) {
 
     // Part 2, quadratic for now
     let height = forest.len();
-    for y in 0..height {
-        for x in 0..forest[y].len() {
+    // Scenic scores for boundaries are 0 (cannot look outside the forest),
+    // since we're interested in the highest value, which should be higher than the initial value of 1,
+    // we can ignore the boundaries altogether
+    for y in 1..height - 1 {
+        for x in 1..forest[y].len() - 1 {
             // Horizontal
             let mut blocked = false;
-            forest[y][x].scenic_score *= (0..x)
+            // No need to multiply: score initialises to 1
+            forest[y][x].scenic_score = (0..x)
                 .rev()
                 .take_while(|&i| {
                     if blocked {
