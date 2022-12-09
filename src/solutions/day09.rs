@@ -33,7 +33,7 @@ pub fn solve(input: String, _verbose: bool) -> (String, String) {
         .collect_vec();
 
     // Also count starting point
-    visited.insert(tail.clone());
+    visited.insert(tail);
 
     for motion in motions.iter() {
         match motion {
@@ -41,28 +41,28 @@ pub fn solve(input: String, _verbose: bool) -> (String, String) {
                 for _ in 0..*d {
                     head.y -= 1;
                     tail.follow(&head);
-                    visited.insert(tail.clone());
+                    visited.insert(tail);
                 }
             }
             Motion::Right(d) => {
                 for _ in 0..*d {
                     head.x += 1;
                     tail.follow(&head);
-                    visited.insert(tail.clone());
+                    visited.insert(tail);
                 }
             }
             Motion::Down(d) => {
                 for _ in 0..*d {
                     head.y += 1;
                     tail.follow(&head);
-                    visited.insert(tail.clone());
+                    visited.insert(tail);
                 }
             }
             Motion::Left(d) => {
                 for _ in 0..*d {
                     head.x -= 1;
                     tail.follow(&head);
-                    visited.insert(tail.clone());
+                    visited.insert(tail);
                 }
             }
         }
@@ -78,7 +78,7 @@ pub fn solve(input: String, _verbose: bool) -> (String, String) {
     (part1.to_string(), part2.to_string())
 }
 
-#[derive(PartialEq, Eq, Hash, Clone, Copy)]
+#[derive(PartialEq, Eq, Hash, Clone, Copy, Default)]
 struct Knot {
     x: i16,
     y: i16,
@@ -111,12 +111,6 @@ impl Knot {
         } else {
             false
         }
-    }
-}
-
-impl Default for Knot {
-    fn default() -> Self {
-        Self { x: 0, y: 0 }
     }
 }
 

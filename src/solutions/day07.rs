@@ -53,10 +53,10 @@ pub fn solve(input: String, _verbose: bool) -> (String, String) {
                 cwd.push(path);
                 dirs.insert(cwd.join("/"), 0);
             }
-        } else if !line.starts_with("$") && !line.starts_with("dir ") {
+        } else if !line.starts_with('$') && !line.starts_with("dir ") {
             // file entry
             let (size, filename) = line
-                .split_once(" ")
+                .split_once(' ')
                 .expect("file entry should be '<size> <name>'");
             let mut fullpath = cwd.join("/");
             fullpath = format!("{fullpath}/{filename}");
