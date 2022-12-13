@@ -1,4 +1,4 @@
-use std::collections::{HashSet, VecDeque};
+use std::collections::VecDeque;
 
 use itertools::Itertools;
 
@@ -77,7 +77,10 @@ impl PathFinder {
 
     fn bfs(&mut self, mut bfs_queue: VecDeque<Scout>) -> Result<usize, String> {
         // Returns the length of the shortest path from `start` to `end`.
-        let mut visited = HashSet::with_capacity(self.map.len());
+        // let mut visited = HashSet::with_capacity(self.map.len());
+        let mut visited = (0..self.height)
+            .map(|_| (0..self.width).map(|_| false).collect_vec())
+            .collect_vec();
 
         while !bfs_queue.is_empty() {
             let current = bfs_queue.pop_front().ok_or(format!(
@@ -90,12 +93,6 @@ impl PathFinder {
                 return Ok(current.len);
             }
 
-            // Don't check the same spot twice
-            if visited.contains(&current.pos) {
-                continue;
-            }
-            visited.insert(current.pos);
-
             // Check which neighbours are reachable, and add them to the search queue
             for (dx, dy) in &[(0, -1), (-1, 0), (1, 0), (0, 1)] {
                 let x = current.pos.0 as isize + dx;
@@ -106,10 +103,15 @@ impl PathFinder {
                         <= self.map[current.pos.1][current.pos.0]
                     {
                         // ...and can be reached
-                        bfs_queue.push_back(Scout {
-                            pos: (x as usize, y as usize),
-                            len: current.len + 1,
-                        });
+
+                        // Don't check the same spot twice
+                        if !visited[y as usize][x as usize] {
+                            visited[y as usize][x as usize] = true;
+                            bfs_queue.push_back(Scout {
+                                pos: (x as usize, y as usize),
+                                len: current.len + 1,
+                            });
+                        }
                     }
                 }
             }
